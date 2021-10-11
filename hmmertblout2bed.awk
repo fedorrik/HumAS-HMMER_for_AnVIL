@@ -233,7 +233,8 @@ BEGIN {
 !/^#/ {
   chr_name ? targetName = chr_name : targetName = $1;
   queryName = $3;
-  aliFrom   = $7;
+# FEDOR: hmmer out is 1-based, bed is 0-based
+  aliFrom   = $7-1;
   aliTo     = $8;
   envFrom   = $9;
   envTo     = $10;
@@ -243,7 +244,8 @@ BEGIN {
   (description != "-" && description != "") ? description = " " $16 : description = "";
 
 # skip SF monomers
-  if ((skipsf)&&(length(queryName) == 2)) { next }
+# FEDOR: no. we need them
+# if ((skipsf)&&(length(queryName) == 2)) { next }
 
 # threshold score to length
   aliLength = abs(aliTo-aliFrom);

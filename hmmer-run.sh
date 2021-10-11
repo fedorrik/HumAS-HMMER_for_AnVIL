@@ -24,7 +24,8 @@ fi
 dir=$1
 hmm_profile_name=$2
 
-files=( $(find "$dir" -type f -name '*.fasta' -print) )
+# FEDOR: I usually use .fa extension
+files=( $(find "$dir" -type f -name '*.fa' -print) )
 
 p="$(basename "$hmm_profile_name")"
 bp="${p%.*}"
@@ -37,11 +38,12 @@ do
     echo "$filename"
 
 #   HMMER analysis
-    nhmmer --notextw --noali --tblout nhmmer-$bp-vs-$bn-tbl.out -o /dev/null $hmm_profile_name $filename
+    # FEDOR: nhmmer takes as many threads as it wants. I usually limit it 
+    nhmmer --cpu 8 --notextw --noali --tblout nhmmer-$bp-vs-$bn-tbl.out -o /dev/null $hmm_profile_name $filename
 
 #   Converting HMM table output to the BED format with filtering by threshold score to length
 #   https://github.com/enigene/hmmertblout2bed
-    awk -v th=0.7 -f ~/git/enigene/hmmertblout2bed/hmmertblout2bed.awk nhmmer-$bp-vs-$bn-tbl.out > nhmmer-$bp-vs-$bn-tbl.bed
+    awk -v th=0.7 -f hmmertblout2bed.awk nhmmer-$bp-vs-$bn-tbl.out > nhmmer-$bp-vs-$bn-tbl.bed
 
 #   Sorting by name and coordinates
 #   recommended running sort with option --temporary-directory=/path/to/another/local/physical/disk
@@ -51,10 +53,19 @@ do
     bedmap --max-element --fraction-either 0.1 _nhmmer-t0-$bn.bed > _nhmmer-t1-$bn.bed
 
 #   Filter unique elements
-    awk "{if(!(\$0 in a)){a[\$0];if(length(\$4)==2){next}print}}" _nhmmer-t1-$bn.bed > nhmmer-$bp-vs-$bn-tbl.bed
+    # FEDOR: don't skip SF monomers
+    awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-HOR+SF-vs-$bn.bed
+
+#   FEDOR: AS-HOR only (skip SF monomers)
+    awk '{ if (length($4)==2) {next} print}' AS-HOR+SF-vs-$bn.bed > AS-HOR-vs-$bn.bed
+#   FEDOR: AS-strand annotation. "+" is blue, "-" is red
+    awk -F $'\t' 'BEGIN {OFS = FS} {if ($6=="+") {$9="0,0,255"}; if ($6=="-") {$9="255,0,0"} print $0}' AS-HOR-vs-$bn.bed > AS-strand-vs-$bn.bed
 
 #   Delete temporary files
     rm _nhmmer-t1-$bn.bed
     rm _nhmmer-t0-$bn.bed
+    # FEDOR: I think we don't need to store huge .out files
+    rm nhmmer-$bp-vs-$bn-tbl.out
+    rm nhmmer-$bp-vs-$bn-tbl.bed
 
 done
