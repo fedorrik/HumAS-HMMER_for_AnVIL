@@ -1,5 +1,7 @@
 ## Hum-AS-HMMER for AnVIL
 
+This is a modified version of [HumAS-HMMER](https://github.com/enigene/HumAS-HMMER).
+
 *In first commit scripts hmmer-run.sh and hmmertblout2bed.awk were the same as in the enigene repositories.*
 
 For each assembly we need to generate 4 bed files: AS-HOR, AS-HOR+SF, AS-strand, AS-SF.

@@ -38,12 +38,14 @@ do
     echo "$filename"
 
 #   HMMER analysis
-    # FEDOR: nhmmer takes as many threads as it wants. I usually limit it 
-    nhmmer --cpu 8 --notextw --noali --tblout nhmmer-$bp-vs-$bn-tbl.out -o /dev/null $hmm_profile_name $filename
+    nhmmer --notextw --noali --tblout nhmmer-$bp-vs-$bn-tbl.out -o /dev/null $hmm_profile_name $filename
 
 #   Converting HMM table output to the BED format with filtering by threshold score to length
 #   https://github.com/enigene/hmmertblout2bed
     awk -v th=0.7 -f hmmertblout2bed.awk nhmmer-$bp-vs-$bn-tbl.out > nhmmer-$bp-vs-$bn-tbl.bed
+
+#   FEDOR: remove huge .out file as soon as it's used
+    rm nhmmer-$bp-vs-$bn-tbl.out
 
 #   Sorting by name and coordinates
 #   recommended running sort with option --temporary-directory=/path/to/another/local/physical/disk
@@ -59,8 +61,6 @@ do
 #   Delete temporary files
     rm _nhmmer-t1-$bn.bed
     rm _nhmmer-t0-$bn.bed
-    # FEDOR: I think we don't need to store huge .out files
-    rm nhmmer-$bp-vs-$bn-tbl.out
     rm nhmmer-$bp-vs-$bn-tbl.bed
 
 done
