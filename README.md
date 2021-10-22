@@ -2,7 +2,12 @@
 
 This is a modified version of [HumAS-HMMER](https://github.com/enigene/HumAS-HMMER).
 
-*In first commit scripts hmmer-run.sh and hmmertblout2bed.awk were the same as in the enigene repositories.*
+Usage: 
+```
+./hmmer-run.sh input_folder AS-HORs-hmmer3.0-170921.hmm number_of_threads
+./hmmer-run_SF.sh input_folder AS-SFs-hmmer3.0.290621.hmm number_of_threads
+```
+*In the first commit scripts hmmer-run.sh and hmmertblout2bed.awk were the same as in the enigene repositories.*
 
 For each assembly we need to generate 4 bed files: AS-HOR, AS-HOR+SF, AS-strand, AS-SF.
 
@@ -11,22 +16,22 @@ For each assembly we need to generate 4 bed files: AS-HOR, AS-HOR+SF, AS-strand,
    (hmmer-run.sh lines 60 and 62)
  - AS-SF is another story. We need to run hmmer again with another hmm profiles. I made separate script hmmer-run_SF.sh which is almost identical to hmmer-run.sh:
  ``` 
-    $ diff hmmer-run.sh hmmer-run_SF.sh 
-    57,62c57
-    <     awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-HOR+SF-vs-$bn.bed
-    < 
-    < #   FEDOR: AS-HOR only (skip SF monomers)
-    <     awk '{ if (length($4)==2) {next} print}' AS-HOR+SF-vs-$bn.bed > AS-HOR-vs-$bn.bed
-    < #   FEDOR: AS-strand annotation. "+" is blue, "-" is red
-    <     awk -F $'\t' 'BEGIN {OFS = FS} {if ($6=="+") {$9="0,0,255"}; if ($6=="-") {$9="255,0,0"} print $0}' AS-HOR-vs-$bn.bed > AS-strand-vs-$bn.bed
-    ---
-    >     awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-SF-vs-$bn.bed
+    $ diff hmmer-run.sh hmmer-run_SF.sh  
+60,65c60
+<     awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-HOR+SF-vs-$bn.bed
+< 
+< #   FEDOR: AS-HOR only (skip SF monomers)
+<     awk '{ if (length($4)==2) {next} print}' AS-HOR+SF-vs-$bn.bed > AS-HOR-vs-$bn.bed
+< #   FEDOR: AS-strand annotation. "+" is blue, "-" is red
+<     awk -F $'\t' 'BEGIN {OFS = FS} {if ($6=="+") {$9="0,0,255"}; if ($6=="-") {$9="255,0,0"} print $0}' AS-HOR-vs-$bn.bed > AS-strand-vs-$bn.bed
+---
+>     awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-SF-vs-$bn.bed
 ```
 So, to get files like in the test dir I run:
 
-    ./hmmer-run.sh test/ AS-HORs-hmmer3.0-170921.hmm
+    ./hmmer-run.sh test/ AS-HORs-hmmer3.0-170921.hmm 8
 Output: AS-HOR+SF, AS-HOR, AS-strand
 
-    ./hmmer-run_SF.sh test/ AS-SFs-hmmer3.0.290621.hmm
+    ./hmmer-run_SF.sh test/ AS-SFs-hmmer3.0.290621.hmm 8
 Output: AS-SF
 

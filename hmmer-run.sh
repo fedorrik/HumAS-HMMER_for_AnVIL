@@ -3,9 +3,9 @@
 set -o pipefail
 set -o errexit
 
-if [[ $# -ne 2 ]]
+if [[ $# -ne 3 ]]
 then
-    echo "usage: $0 input_folder path_and_name_of_the_profile" 1>&2
+    echo "usage: $0 input_folder path_and_name_of_the_profile number_of_threads" 1>&2
     exit 1
 fi
 
@@ -23,6 +23,7 @@ fi
 
 dir=$1
 hmm_profile_name=$2
+threads=$3
 
 # FEDOR: I usually use .fa extension
 files=( $(find "$dir" -type f -name '*.fa' -print) )
@@ -38,7 +39,7 @@ do
     echo "$filename"
 
 #   HMMER analysis
-    nhmmer --notextw --noali --tblout nhmmer-$bp-vs-$bn-tbl.out -o /dev/null $hmm_profile_name $filename
+    nhmmer --cpu $threads --notextw --noali --tblout nhmmer-$bp-vs-$bn-tbl.out -o /dev/null $hmm_profile_name $filename
 
 #   Converting HMM table output to the BED format with filtering by threshold score to length
 #   https://github.com/enigene/hmmertblout2bed
