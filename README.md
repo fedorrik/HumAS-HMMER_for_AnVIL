@@ -1,37 +1,28 @@
 ## Hum-AS-HMMER for AnVIL
 
-This is a modified version of [HumAS-HMMER](https://github.com/enigene/HumAS-HMMER).
+This is a modified version of [HumAS-HMMER](https://github.com/enigene/HumAS-HMMER). Everything you need to produce ASat annotation standart pack (except [StV](https://github.com/fedorrik/stv) script) are in this repo.
 
 Usage: 
 ```
-./hmmer-run.sh input_folder AS-HORs-hmmer3.0-170921.hmm number_of_threads
+./hmmer-run.sh input_folder AS-HORs-hmmer3.0-030922.hmm number_of_threads
 ./hmmer-run_SF.sh input_folder AS-SFs-hmmer3.0.290621.hmm number_of_threads
 ```
-*In the first commit scripts hmmer-run.sh and hmmertblout2bed.awk were the same as in the enigene repositories.*
+
+RECOMMENDATION: If you have fasta file with few sequeces I recommend to split them into separate files with one sequence in each. So, script will proccess each sequence separately (in a loop) which will take less storage and time. 
+
+*In the first commit scripts hmmer-run.sh and hmmertblout2bed.awk were the same as in the [enigene](https://github.com/enigene?tab=repositories) repositories. After that, I added few changes (always adding comment which starts with # FEDOR). And I made two versions of hmmer-run.sh script.*
 
 For each assembly we need to generate 4 bed files: AS-HOR, AS-HOR+SF, AS-strand, AS-SF.
 
  - AS-HOR+SF is main output of hmmer-run.sh
- - AS-HOR and AS-strand get from AS-HOR+SF by one awk command
-   (hmmer-run.sh lines 60 and 62)
- - AS-SF is another story. We need to run hmmer again with another hmm profiles. I made separate script hmmer-run_SF.sh which is almost identical to hmmer-run.sh:
- ``` 
-    $ diff hmmer-run.sh hmmer-run_SF.sh  
-60,65c60
-<     awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-HOR+SF-vs-$bn.bed
-< 
-< #   FEDOR: AS-HOR only (skip SF monomers)
-<     awk '{ if (length($4)==2) {next} print}' AS-HOR+SF-vs-$bn.bed > AS-HOR-vs-$bn.bed
-< #   FEDOR: AS-strand annotation. "+" is blue, "-" is red
-<     awk -F $'\t' 'BEGIN {OFS = FS} {if ($6=="+") {$9="0,0,255"}; if ($6=="-") {$9="255,0,0"} print $0}' AS-HOR-vs-$bn.bed > AS-strand-vs-$bn.bed
----
->     awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-SF-vs-$bn.bed
-```
-So, to get files like in the test dir I run:
+ - AS-HOR is obtained from AS-HOR+SF by one awk command which removes SF lines (hmmer-run.sh line 63)
+ - AS-SF is main output of hmmer-run_SF.sh
+ - AS-strand is obtained from AS-SF by one awk command which changes colors (hmmer-run_SF.sh line 63)
 
-    ./hmmer-run.sh test/ AS-HORs-hmmer3.0-170921.hmm 8
-Output: AS-HOR+SF, AS-HOR, AS-strand
+So, to get files like in the test dir, run:
+
+    ./hmmer-run.sh test/ AS-HORs-hmmer3.0-030922.hmm 8
+Output beds: AS-HOR+SF, AS-HOR
 
     ./hmmer-run_SF.sh test/ AS-SFs-hmmer3.0.290621.hmm 8
-Output: AS-SF
-
+Output beds: AS-SF, AS-strand

@@ -61,8 +61,6 @@ do
 
 #   FEDOR: AS-HOR only (skip SF monomers)
     awk '{ if (length($4)==2) {next} print}' AS-HOR+SF-vs-$bn.bed > AS-HOR-vs-$bn.bed
-#   FEDOR: AS-strand annotation. "+" is blue, "-" is red
-    awk -F $'\t' 'BEGIN {OFS = FS} {if ($6=="+") {$9="0,0,255"}; if ($6=="-") {$9="255,0,0"} print $0}' AS-HOR-vs-$bn.bed > AS-strand-vs-$bn.bed
 
 #   Delete temporary files
     rm _nhmmer-t1-$bn.bed
