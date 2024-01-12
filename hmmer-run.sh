@@ -57,7 +57,10 @@ do
 
 #   Filter unique elements
     # FEDOR: don't skip SF monomers
-    awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-HOR+SF-vs-$bn.bed
+    awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > _nhmmer-t0-$bn.bed
+
+#   FEDOR: addicional overlap filtering
+    python3 overlap_filter.py _nhmmer-t0-$bn.bed > AS-HOR+SF-vs-$bn.bed
 
 #   FEDOR: AS-HOR only (skip SF monomers)
     awk '{ if (length($4)==2) {next} print}' AS-HOR+SF-vs-$bn.bed > AS-HOR-vs-$bn.bed

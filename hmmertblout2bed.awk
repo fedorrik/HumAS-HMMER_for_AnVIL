@@ -11,7 +11,7 @@ BEGIN {
   if (coords == "env") coordsEnv = 1;
   if (+th < 0) th = 0;
   if (+th > 1) th = 1;
-
+  
   cnA["M1"]                    = "255,255,0";
   cnA["Qa"]                    = "165,39,0";
   cnA["Pa"]                    = "75,59,162";
@@ -115,7 +115,7 @@ BEGIN {
   cnA["S3C1qH2-C\\."]          = "171,135,63";
   cnA["S3C1H2-C\\."]           = "171,135,63";
   cnA["S3C11H1L\\."]           = "201,255,94";
-  cnA["S3C11H2\\."]            = "7,171,7";
+  # cnA["S3C11H2\\."]            = "7,171,7";      # FEDOR: renamed to S3C11H2-A
   cnA["S3CXH1L\\."]            = "10,255,173";
   cnA["S3C17H1-B\\."]          = "120,171,171";
   cnA["S3C17H1L\\."]           = "179,204,255";
@@ -228,6 +228,15 @@ BEGIN {
   cnA["ref_SPL_W4F_CCT_pos_61-YELLOW2.6"]="0,56,212";
   cnA["alt_SPL_W4D_ATTTA_pos_59-YELLOW2.4"]="138,14,30";
   cnA["ref_SPL_W4D_CTTTTCC_pos_59-YELLOW2.4"]="64,212,162";
+  
+  # FEDOR updates:
+  cnA["S3C1H2-F\\."]            = "0,255,0";
+  cnA["S3C1H2-E\\."]            = "0,255,255";
+  cnA["S2С2H2-C\\."]            = "0,255,0";
+  cnA["S3C11H2-A\\."]           = "7,171,7";
+  cnA["S3C11H2-B\\."]           = "0,255,255";  
+  cnA["S4C15H4\\."]             = "255,150,0";
+  cnA["S5C5/19H8\\."]           = "0,0,255";
 }
 
 !/^#/ {

@@ -4,7 +4,7 @@ This is a modified version of [HumAS-HMMER](https://github.com/enigene/HumAS-HMM
 
 Usage: 
 ```
-./hmmer-run.sh input_folder AS-HORs-hmmer3.0-030922.hmm number_of_threads
+./hmmer-run.sh input_folder AS-HORs-hmmer3.3.2-120124.hmm number_of_threads
 ./hmmer-run_SF.sh input_folder AS-SFs-hmmer3.0.290621.hmm number_of_threads
 ```
 
@@ -21,8 +21,15 @@ For each assembly we need to generate 4 bed files: AS-HOR, AS-HOR+SF, AS-strand,
 
 So, to get files like in the test dir, run:
 
-    ./hmmer-run.sh test/ AS-HORs-hmmer3.0-030922.hmm 8
+    ./hmmer-run.sh test/ AS-HORs-hmmer3.3.2-120124.hmm 8
 Output beds: AS-HOR+SF, AS-HOR
 
     ./hmmer-run_SF.sh test/ AS-SFs-hmmer3.0.290621.hmm 8
 Output beds: AS-SF, AS-strand
+
+### LAST UPDATE 01/12/2024
+- updated HOR hmm was added: AS-HORs-hmmer3.3.2-120124.hmm
+- color codes for new HORs were added to hmmertblout2bed.awk
+- additional overlaps filtering script [overlap_filter.py] were added and implemented to hmmer-run.sh and hmmer-run_SF.sh pipelines
+- scripts for converting bed to BigBed were added in bed2bb dir (to use it run ./bed2bb.sh <path/to/assembly>.fa from bed2bb dir having all beds in bed2bb dir)
+

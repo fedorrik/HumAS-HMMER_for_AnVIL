@@ -57,7 +57,10 @@ do
 
 #   Filter unique elements
     # FEDOR: don't skip SF monomers
-    awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > AS-SF-vs-$bn.bed
+    awk "{if(!(\$0 in a)){a[\$0]; print}}" _nhmmer-t1-$bn.bed > _nhmmer-t0-$bn.bed
+    
+#   FEDOR: addicional overlap filtering
+    python3 overlap_filter.py _nhmmer-t0-$bn.bed > AS-SF-vs-$bn.bed
 
 #   FEDOR: AS-strand annotation. "+" is blue, "-" is red
     awk -F $'\t' 'BEGIN {OFS = FS} {if ($6=="+") {$9="0,0,255"}; if ($6=="-") {$9="255,0,0"} print $0}' AS-SF-vs-$bn.bed > AS-strand-vs-$bn.bed
